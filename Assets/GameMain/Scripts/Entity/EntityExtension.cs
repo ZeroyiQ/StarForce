@@ -40,6 +40,11 @@ namespace StarForce
             entityComponent.AttachEntity(entity.Entity, ownerId, parentTransformPath, userData);
         }
 
+        public static void ShowBinBall(this EntityComponent entityComponent, BinballData data)
+        {
+            entityComponent.ShowEntity(typeof(BinBall), "BinBall", Constant.AssetPriority.BinBall, data);
+        }
+
         public static void ShowMyAircraft(this EntityComponent entityComponent, MyAircraftData data)
         {
             entityComponent.ShowEntity(typeof(MyAircraft), "Aircraft", Constant.AssetPriority.MyAircraftAsset, data);

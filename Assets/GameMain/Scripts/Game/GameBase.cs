@@ -51,6 +51,12 @@ namespace StarForce
                 Position = Vector3.zero,
             });
 
+            GameEntry.Entity.ShowBinBall(new BinballData(GameEntry.Entity.GenerateSerialId(), 70003)
+            {
+                Name = "My BinBall",
+                Position = Vector3.zero,
+            });
+
             GameOver = false;
             m_MyAircraft = null;
         }
