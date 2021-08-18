@@ -5,7 +5,7 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 // 此文件由工具自动生成，请勿直接修改。
-// 生成时间：2021-08-18 16:49:40.313
+// 生成时间：2021-08-18 16:49:40.308
 //------------------------------------------------------------
 
 using GameFramework;
@@ -19,14 +19,14 @@ using UnityGameFramework.Runtime;
 namespace StarForce
 {
     /// <summary>
-    /// 实体表。
+    /// 球类表。
     /// </summary>
-    public class DREntity : DataRowBase
+    public class DRBinball : DataRowBase
     {
         private int m_Id = 0;
 
         /// <summary>
-        /// 获取实体编号。
+        /// 获取球体编号。
         /// </summary>
         public override int Id
         {
@@ -37,9 +37,36 @@ namespace StarForce
         }
 
         /// <summary>
-        /// 获取资源名称。
+        /// 获取质量。
         /// </summary>
-        public string AssetName
+        public float Mass
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 获取阻力。
+        /// </summary>
+        public float Drag
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 获取摩擦力。
+        /// </summary>
+        public float Friction
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 获取弹力。
+        /// </summary>
+        public float Bounciness
         {
             get;
             private set;
@@ -57,7 +84,10 @@ namespace StarForce
             index++;
             m_Id = int.Parse(columnStrings[index++]);
             index++;
-            AssetName = columnStrings[index++];
+            Mass = float.Parse(columnStrings[index++]);
+            Drag = float.Parse(columnStrings[index++]);
+            Friction = float.Parse(columnStrings[index++]);
+            Bounciness = float.Parse(columnStrings[index++]);
 
             GeneratePropertyArray();
             return true;
@@ -70,7 +100,10 @@ namespace StarForce
                 using (BinaryReader binaryReader = new BinaryReader(memoryStream, Encoding.UTF8))
                 {
                     m_Id = binaryReader.Read7BitEncodedInt32();
-                    AssetName = binaryReader.ReadString();
+                    Mass = binaryReader.ReadSingle();
+                    Drag = binaryReader.ReadSingle();
+                    Friction = binaryReader.ReadSingle();
+                    Bounciness = binaryReader.ReadSingle();
                 }
             }
 

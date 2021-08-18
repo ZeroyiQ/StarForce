@@ -8,6 +8,7 @@
 using System.Collections.Generic;
 using UnityGameFramework.Runtime;
 using ProcedureOwner = GameFramework.Fsm.IFsm<GameFramework.Procedure.IProcedureManager>;
+using GameFramework.Event;
 
 namespace StarForce
 {
@@ -38,6 +39,8 @@ namespace StarForce
             base.OnInit(procedureOwner);
 
             m_Games.Add(GameMode.Survival, new SurvivalGame());
+            m_Games.Add(GameMode.Build, new BuildGame());
+            m_Games.Add(GameMode.Show, new ShowGame());
         }
 
         protected override void OnDestroy(ProcedureOwner procedureOwner)
@@ -50,6 +53,7 @@ namespace StarForce
         protected override void OnEnter(ProcedureOwner procedureOwner)
         {
             base.OnEnter(procedureOwner);
+            GameEntry.Event.Subscribe(OpenUIFormSuccessEventArgs.EventId, ChangeGameMode);
 
             m_GotoMenu = false;
             GameMode gameMode = (GameMode)procedureOwner.GetData<VarByte>("GameMode").Value;
@@ -59,6 +63,8 @@ namespace StarForce
 
         protected override void OnLeave(ProcedureOwner procedureOwner, bool isShutdown)
         {
+            GameEntry.Event.Unsubscribe(OpenUIFormSuccessEventArgs.EventId, ChangeGameMode);
+
             if (m_CurrentGame != null)
             {
                 m_CurrentGame.Shutdown();
@@ -90,6 +96,17 @@ namespace StarForce
                 procedureOwner.SetData<VarInt32>("NextSceneId", GameEntry.Config.GetInt("Scene.Menu"));
                 ChangeState<ProcedureChangeScene>(procedureOwner);
             }
+        }
+
+        private void ChangeGameMode(object sender, GameEventArgs e)
+        {
+            if (m_CurrentGame != null)
+            {
+                m_CurrentGame.Shutdown();
+            }
+            // 更新新游戏模式
+            //m_CurrentGame = 
+            m_CurrentGame.Initialize();
         }
     }
 }

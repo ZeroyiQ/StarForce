@@ -38,7 +38,7 @@ namespace StarForce
         private void Update()
         {
             float newPosition = Mathf.Repeat(Time.time * m_ScrollSpeed, m_TileSize);
-            m_CachedTransform.position = m_StartPosition + Vector3.forward * newPosition;
+            m_CachedTransform.position = m_StartPosition + Vector3.up * newPosition;
         }
 
         public BoxCollider VisibleBoundary
