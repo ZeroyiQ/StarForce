@@ -9,7 +9,7 @@ using GameFramework.Event;
 using UnityEngine;
 using UnityGameFramework.Runtime;
 
-namespace StarForce
+namespace BinBall
 {
     public abstract class GameBase
     {
@@ -37,28 +37,29 @@ namespace StarForce
             GameEntry.Event.Subscribe(ShowEntitySuccessEventArgs.EventId, OnShowEntitySuccess);
             GameEntry.Event.Subscribe(ShowEntityFailureEventArgs.EventId, OnShowEntityFailure);
 
-            SceneBackground = Object.FindObjectOfType<ScrollableBackground>();
-            if (SceneBackground == null)
-            {
-                Log.Warning("Can not find scene background.");
-                return;
-            }
+            // SceneBackground = Object.FindObjectOfType<ScrollableBackground>();
+            // if (SceneBackground == null)
+            // {
+            //     Log.Warning("Can not find scene background.");
+            //     return;
+            // }
 
-            SceneBackground.VisibleBoundary.gameObject.GetOrAddComponent<HideByBoundary>();
+            // SceneBackground.VisibleBoundary.gameObject.GetOrAddComponent<HideByBoundary>();
             GameEntry.Entity.ShowMyAircraft(new MyAircraftData(GameEntry.Entity.GenerateSerialId(), 10000)
             {
                 Name = "My Aircraft",
                 Position = Vector3.zero,
             });
 
-            GameEntry.Entity.ShowBinBall(new BinballData(GameEntry.Entity.GenerateSerialId(), 70003)
+            GameEntry.Entity.ShowBinBall(new BinballData(GameEntry.Entity.GenerateSerialId(), 50001)
             {
                 Name = "My BinBall",
-                Position = Vector3.zero,
+                Position = new Vector3(-3.62f,7f,0f),
             });
 
             GameOver = false;
             m_MyAircraft = null;
+            GameEntry.UI.OpenUIForm(UIFormId.MainForm);
         }
 
         public virtual void Shutdown()

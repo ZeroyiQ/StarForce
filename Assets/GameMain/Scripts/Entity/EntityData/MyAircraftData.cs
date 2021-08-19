@@ -8,7 +8,7 @@
 using System;
 using UnityEngine;
 
-namespace StarForce
+namespace BinBall
 {
     [Serializable]
     public class MyAircraftData : AircraftData

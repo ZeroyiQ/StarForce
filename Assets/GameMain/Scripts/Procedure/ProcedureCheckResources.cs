@@ -1,7 +1,7 @@
 ﻿using UnityGameFramework.Runtime;
 using ProcedureOwner = GameFramework.Fsm.IFsm<GameFramework.Procedure.IProcedureManager>;
 
-namespace StarForce
+namespace BinBall
 {
     public class ProcedureCheckResources : ProcedureBase
     {

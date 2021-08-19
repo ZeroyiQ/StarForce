@@ -7,7 +7,7 @@
 
 using System;
 
-namespace StarForce
+namespace BinBall
 {
     public static class WebUtility
     {

@@ -5,7 +5,7 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 
-namespace StarForce
+namespace BinBall
 {
     /// <summary>
     /// 界面编号。
@@ -33,5 +33,10 @@ namespace StarForce
         /// 关于。
         /// </summary>
         AboutForm = 102,
+        
+        /// <summary>
+        /// 关于。
+        /// </summary>
+        MainForm = 103,
     }
 }

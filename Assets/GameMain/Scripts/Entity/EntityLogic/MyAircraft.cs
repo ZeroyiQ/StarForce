@@ -8,7 +8,7 @@
 using UnityEngine;
 using UnityGameFramework.Runtime;
 
-namespace StarForce
+namespace BinBall
 {
     public class MyAircraft : Aircraft
     {

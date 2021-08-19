@@ -7,7 +7,7 @@
 
 using UnityEngine;
 
-namespace StarForce
+namespace BinBall
 {
     public class ScrollableBackground : MonoBehaviour
     {

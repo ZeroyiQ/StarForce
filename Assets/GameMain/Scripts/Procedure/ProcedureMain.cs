@@ -10,7 +10,7 @@ using UnityGameFramework.Runtime;
 using ProcedureOwner = GameFramework.Fsm.IFsm<GameFramework.Procedure.IProcedureManager>;
 using GameFramework.Event;
 
-namespace StarForce
+namespace BinBall
 {
     public class ProcedureMain : ProcedureBase
     {
@@ -38,7 +38,7 @@ namespace StarForce
         {
             base.OnInit(procedureOwner);
 
-            m_Games.Add(GameMode.Survival, new SurvivalGame());
+            // m_Games.Add(GameMode.Survival, new SurvivalGame());
             m_Games.Add(GameMode.Build, new BuildGame());
             m_Games.Add(GameMode.Show, new ShowGame());
         }

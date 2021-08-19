@@ -8,7 +8,7 @@
 using GameFramework.Network;
 using ProtoBuf;
 
-namespace StarForce
+namespace BinBall
 {
     public abstract class PacketBase : Packet, IExtensible
     {

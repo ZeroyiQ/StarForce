@@ -7,7 +7,7 @@
 
 using UnityEngine;
 
-namespace StarForce
+namespace BinBall
 {
     /// <summary>
     /// 游戏入口。

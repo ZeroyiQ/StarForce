@@ -1,4 +1,4 @@
-﻿namespace StarForce
+﻿namespace BinBall
 {
     /// <summary>
     /// 游戏模式。

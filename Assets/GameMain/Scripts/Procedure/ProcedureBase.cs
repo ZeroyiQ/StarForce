@@ -5,7 +5,7 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 
-namespace StarForce
+namespace BinBall
 {
     public abstract class ProcedureBase : GameFramework.Procedure.ProcedureBase
     {

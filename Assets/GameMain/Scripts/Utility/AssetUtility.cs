@@ -7,7 +7,7 @@
 
 using GameFramework;
 
-namespace StarForce
+namespace BinBall
 {
     public static class AssetUtility
     {
