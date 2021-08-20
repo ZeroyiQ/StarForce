@@ -20,16 +20,28 @@ namespace BinBall
                 return GameMode.Show;
             }
         }
-        public float Sorce
+        public float Score
         {
-            get;
-            private set;
+            get
+            {
+                float realScore = m_TimeScore;
+                if (m_MyBall != null)
+                {
+                    realScore += m_MyBall.Score;
+                }
+                return realScore;
+            }
         }
+        private float m_TimeScore;
 
-        public override void Initialize()
+        public override void Initialize(BinBall ball)
         {
-            base.Initialize();
-            Sorce = 0;
+            base.Initialize(ball);
+            m_TimeScore = 0;
+            if (ball != null)
+            {
+                ball.ResumeBall();
+            }
         }
 
         public override void Shutdown()
@@ -39,8 +51,15 @@ namespace BinBall
 
         public override void Update(float elapseSeconds, float realElapseSeconds)
         {
-            //base.Update(elapseSeconds, realElapseSeconds);
-            Sorce += realElapseSeconds * 0.5f;
+            base.Update(elapseSeconds, realElapseSeconds);
+            m_TimeScore += realElapseSeconds * 0.5f;
+            if (m_MyBall != null)
+            {
+                if (!m_MyBall.Visible)
+                {
+                    GameOver = true;
+                }
+            }
         }
     }
 }

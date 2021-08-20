@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - EndPoint
+  - Wall
   layers:
   - Default
   - TransparentFX

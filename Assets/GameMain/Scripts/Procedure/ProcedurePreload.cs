@@ -19,18 +19,18 @@ namespace BinBall
     {
         public static readonly string[] DataTableNames = new string[]
         {
-            "Aircraft",
-            "Armor",
-            "Asteroid",
+            // "Aircraft",
+            // "Armor",
+            // "Asteroid",
             "Binball",
             "Entity",
             "Music",
             "Scene",
             "Sound",
-            "Thruster",
+            // "Thruster",
             "UIForm",
             "UISound",
-            "Weapon",
+            // "Weapon",
         };
 
         private Dictionary<string, bool> m_LoadedFlag = new Dictionary<string, bool>();

@@ -25,5 +25,11 @@
     <String Key="Setting.UISound" Value="界面音效" />
     <String Key="Setting.Language" Value="语言" />
     <String Key="Setting.LanguageTips" Value="更改语言需要重启游戏" />
-  </Dictionary>
+    <String Key="Main.Start" Value="运行" />
+    <String Key="Main.Score" Value="分数：{0}" />
+    <String Key="Main.EndPoint" Value="终点" />
+    <String Key="Main.Build.Cube1" Value="立方体1" />
+    <String Key="Main.Build.Cube2" Value="立方体2" />
+    <String Key="Main.Build.Cube3" Value="立方体3" />
+</Dictionary>
 </Dictionaries>

@@ -14,17 +14,30 @@ namespace BinBall
         private Rigidbody m_Rigidbody;
 
         private Vector3 m_PreVelocity = Vector3.zero;
-        private void Awake()
+        public float Score
         {
-            m_Rigidbody = GetComponent<Rigidbody>();
-            m_Hight = 0.5f;
+            get;
+            private set;
+        }
+
+        public void PauseBall()
+        {
+            m_Rigidbody.useGravity = false;
+            m_Rigidbody.mass = 0;
+            m_Rigidbody.velocity = Vector3.zero;
+        }
+        public void ResumeBall()
+        {
+            m_Rigidbody.useGravity = true;
+            m_Rigidbody.mass = m_Data.Mass;
         }
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
             m_Collider = GetComponent<SphereCollider>();
             m_Rigidbody = GetComponent<Rigidbody>();
-            m_Hight = 2;
+            m_Hight = 0.5f;
+
         }
         protected override void OnShow(object userData)
         {
@@ -35,27 +48,19 @@ namespace BinBall
                 Log.Error("Binball data is invalid.");
                 return;
             }
-            if (m_Collider != null)
-            {
-                var material = m_Collider.material;
-                if (material != null)
-                {
-                    material.dynamicFriction = m_Data.Friction;
-                    material.bounciness = m_Data.Bounciness;
-                    Log.Info("Modify BinBall Physical Material.");
-                }
-            }
             if (m_Rigidbody != null)
             {
                 m_Rigidbody.mass = m_Data.Mass;
                 m_Rigidbody.drag = m_Data.Drag;
                 Log.Info("Modify BinBall Rigidbody.");
             }
+            Score = 0;
         }
 
         protected override void OnHide(bool isShutdown, object userData)
         {
             base.OnHide(isShutdown, userData);
+
         }
 
 
@@ -80,19 +85,23 @@ namespace BinBall
             float vy = Mathf.Sqrt(Mathf.Abs(Physics.gravity.y * m_Hight * 2));
             ContactPoint contactPoint = other.contacts[0];
 
-            Vector3 newDir = Vector3.Reflect(Vector3.down, contactPoint.normal);
+            Vector3 newDir = Vector3.Reflect(m_PreVelocity.normalized, contactPoint.normal);
             Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, newDir);
             transform.rotation = rotation;
             m_Rigidbody.velocity = newDir.normalized * m_PreVelocity.y / m_PreVelocity.normalized.y * 0.8f;
-            Debug.LogError($"{m_Rigidbody.velocity.ToString()}");
+            Log.Info($"{m_Rigidbody.velocity.ToString()}");
+            if (other.gameObject.tag == "Wall")
+            {
+                Score += 10;
+            }
         }
 
         private void OnTriggerEnter(Collider other)
         {
             if (other.tag == "EndPoint")
             {
-                Destroy(this.gameObject);
-                Debug.LogError($"Game End.");
+                GameEntry.Entity.HideEntity(this);
+                Log.Info($"End Game.");
             }
         }
     }

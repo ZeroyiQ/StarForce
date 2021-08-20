@@ -6,11 +6,6 @@
     public enum GameMode : byte
     {
         /// <summary>
-        /// 生存模式。
-        /// </summary>
-        Survival,
-
-        /// <summary>
         /// 建造模式
         /// </summary>
         Build,

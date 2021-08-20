@@ -8,6 +8,7 @@
 using GameFramework;
 using GameFramework.DataTable;
 using UnityEngine;
+using UnityGameFramework.Runtime;
 
 namespace BinBall
 {
@@ -21,16 +22,20 @@ namespace BinBall
             }
         }
 
-        public override void Initialize()
+        public override void Initialize(BinBall ball)
         {
-            base.Initialize();
-            GameEntry.Base.PauseGame();
+            base.Initialize(ball);
+            if (ball != null)
+            {
+                ball.PauseBall();
+            }else{
+                Log.Error("实例空");
+            }
         }
 
         public override void Shutdown()
         {
             base.Shutdown();
-            GameEntry.Base.ResumeGame();
         }
 
         public override void Update(float elapseSeconds, float realElapseSeconds)
