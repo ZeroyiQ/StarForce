@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityGameFramework.Runtime;
 namespace BinBall
 {
 
@@ -12,6 +13,7 @@ namespace BinBall
         public void OnPointerDown(PointerEventData eventData)
         {
             DragScrollRect.Instance.ChooseCell(Template);
+            Log.Error("1111");
         }
     }
 }

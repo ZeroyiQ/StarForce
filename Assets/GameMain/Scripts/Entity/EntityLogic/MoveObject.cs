@@ -16,11 +16,6 @@ namespace BinBall
     public class MoveObject : Entity
     {
 
-        public void ApplyDamage(Entity attacker, int damageHP)
-        {
-
-        }
-
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
@@ -62,13 +57,23 @@ namespace BinBall
 
         private void OnMouseDown()
         {
-            //记录起始位置
-            //因为我们的物体cube所处的是世界空间 鼠标是屏幕空间
-            //需要将鼠标的屏幕空间转换成世界空间
-            startPos = MyScreenPointToWorldPoint(Input.mousePosition, transform);
+            StarDrag();
         }
 
         private void OnMouseDrag()
+        {
+            Drag();
+        }
+
+        public void StarDrag(Vector2? position = null)
+        {
+            if (position != null)
+            {
+                // transform.position = new Vector3(position.x, position.y, 0);
+            }
+            startPos = MyScreenPointToWorldPoint(Input.mousePosition, transform);
+        }
+        public void Drag()
         {
             endPos = MyScreenPointToWorldPoint(Input.mousePosition, transform);
             //计算偏移量
