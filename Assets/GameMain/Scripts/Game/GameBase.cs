@@ -20,7 +20,7 @@ namespace BinBall
         public bool GameOver
         {
             get;
-            protected set;
+            set;
         }
         public bool ModeChange
         {

@@ -27,6 +27,7 @@ namespace BinBall
             base.Initialize(ball);
             if (ball != null)
             {
+                ball.Reset();
                 ball.PauseBall();
             }else{
                 Log.Error("实例空");

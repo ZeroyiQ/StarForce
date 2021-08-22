@@ -19,6 +19,8 @@ namespace BinBall
         private float m_Friction = 0.2f;
         [SerializeField]
         private float m_Bounciness = 0.5f;
+        [SerializeField]
+        private Vector3 m_StartPostion = Vector3.zero;
         public BinballData(int entityId, int typeId) : base(entityId, typeId)
         {
             IDataTable<DRBinball> dtBinball = GameEntry.DataTable.GetDataTable<DRBinball>();
@@ -31,6 +33,7 @@ namespace BinBall
             m_Drag = drBinball.Drag;
             m_Friction = drBinball.Friction;
             m_Bounciness = drBinball.Bounciness;
+            m_StartPostion = drBinball.StartPostion;
         }
         /// <summary>
         /// 角色名称。
@@ -92,5 +95,12 @@ namespace BinBall
             }
         }
 
+        public Vector3 StartPosition
+        {
+            get
+            {
+                return m_StartPostion;
+            }
+        }
     }
 }

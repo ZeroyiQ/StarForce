@@ -5,11 +5,10 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 
+using GameFramework.Event;
 using System.Collections.Generic;
 using UnityGameFramework.Runtime;
 using ProcedureOwner = GameFramework.Fsm.IFsm<GameFramework.Procedure.IProcedureManager>;
-using GameFramework.Event;
-using UnityEngine;
 
 namespace BinBall
 {
@@ -22,7 +21,9 @@ namespace BinBall
                 return false;
             }
         }
-        private const float GameOverDelayedSeconds = 2f;
+
+        private const float BACK_TO_MENU_DELAY = 2f;
+        private float m_GameOverDelayedSeconds;
 
         private readonly Dictionary<GameMode, GameBase> m_Games = new Dictionary<GameMode, GameBase>();
         private GameBase m_CurrentGame = null;
@@ -33,8 +34,17 @@ namespace BinBall
         private int m_Id;
         private BinBall m_MyBall;
         private bool m_Ready;
-        public void GotoMenu()
+
+        public void GotoMenu(bool isImediate = false)
         {
+            if (isImediate)
+            {
+                m_GameOverDelayedSeconds = -1;
+            }
+            if (m_CurrentGame != null)
+            {
+                m_CurrentGame.GameOver = true;
+            }
             m_GotoMenu = true;
         }
 
@@ -62,6 +72,7 @@ namespace BinBall
             GameEntry.Event.Subscribe(ShowEntitySuccessEventArgs.EventId, OnShowEntitySuccess);
             m_GotoMenu = false;
             m_Ready = false;
+            m_GameOverDelayedSeconds = BACK_TO_MENU_DELAY;
             InitBinBall();
         }
 
@@ -91,7 +102,7 @@ namespace BinBall
             {
                 return;
             }
-            if (m_CurrentGame != null && !m_CurrentGame.GameOver)
+            if ((m_CurrentGame != null && !m_CurrentGame.GameOver))
             {
                 m_CurrentGame.Update(elapseSeconds, realElapseSeconds);
                 if (m_CurrentGame.GameMode == GameMode.Show)
@@ -100,23 +111,21 @@ namespace BinBall
                 }
                 return;
             }
-
             if (!m_GotoMenu)
             {
                 m_GotoMenu = true;
                 m_GotoMenuDelaySeconds = 0;
             }
-
             m_GotoMenuDelaySeconds += elapseSeconds;
-            if (m_GotoMenuDelaySeconds >= GameOverDelayedSeconds)
+
+            if (m_GotoMenuDelaySeconds >= m_GameOverDelayedSeconds)
             {
                 procedureOwner.SetData<VarInt32>("NextSceneId", GameEntry.Config.GetInt("Scene.Menu"));
                 ChangeState<ProcedureChangeScene>(procedureOwner);
             }
         }
 
-        #endregion
-
+        #endregion Life Cycle
 
         #region Event
 
@@ -132,6 +141,7 @@ namespace BinBall
             SetGameMode(GameMode.Build);
             m_Ready = true;
         }
+
         private void OnShowEntitySuccess(object sender, GameEventArgs e)
         {
             ShowEntitySuccessEventArgs ne = (ShowEntitySuccessEventArgs)e;
@@ -142,21 +152,25 @@ namespace BinBall
             m_MyBall = (BinBall)ne.Entity.Logic;
             GameEntry.UI.OpenUIForm(UIFormId.MainForm, this);
         }
-        #endregion
+
+        #endregion Event
 
         #region Init
+
         private void InitBinBall()
         {
             m_Id = GameEntry.Entity.GenerateSerialId();
             GameEntry.Entity.ShowBinBall(new BinballData(m_Id, 70003)
             {
                 Name = "My BinBall",
-                Position = new Vector3(-3.62f, 7f, 0f),
+                Position = GameEntry.DataTable.GetDataTable<DRBinball>().GetDataRow(70003).StartPostion
             });
         }
 
-        #endregion
+        #endregion Init
+
         #region private
+
         public void SetGameMode(GameMode gameMode)
         {
             if (m_CurrentGame != null)
@@ -168,6 +182,6 @@ namespace BinBall
             m_MainForm.SetMode(m_CurrentGame.GameMode);
         }
 
-        #endregion
+        #endregion private
     }
 }

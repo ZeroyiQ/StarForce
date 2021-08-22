@@ -3,7 +3,7 @@
 // Copyright © 2013-2021 Jiang Yin. All rights reserved.
 //------------------------------------------------------------
 // 此文件由工具自动生成，请勿直接修改。
-// 生成时间：2021-08-20 16:58:44.675
+// 生成时间：2021-08-22 12:27:07.450
 //------------------------------------------------------------
 
 using GameFramework;
@@ -70,6 +70,15 @@ namespace BinBall
             private set;
         }
 
+        /// <summary>
+        /// 获取初始位置。
+        /// </summary>
+        public Vector3 StartPostion
+        {
+            get;
+            private set;
+        }
+
         public override bool ParseDataRow(string dataRowString, object userData)
         {
             string[] columnStrings = dataRowString.Split(DataTableExtension.DataSplitSeparators);
@@ -86,6 +95,7 @@ namespace BinBall
             Drag = float.Parse(columnStrings[index++]);
             Friction = float.Parse(columnStrings[index++]);
             Bounciness = float.Parse(columnStrings[index++]);
+            StartPostion = DataTableExtension.ParseVector3(columnStrings[index++]);
 
             GeneratePropertyArray();
             return true;
@@ -102,6 +112,7 @@ namespace BinBall
                     Drag = binaryReader.ReadSingle();
                     Friction = binaryReader.ReadSingle();
                     Bounciness = binaryReader.ReadSingle();
+                    StartPostion = binaryReader.ReadVector3();
                 }
             }
 

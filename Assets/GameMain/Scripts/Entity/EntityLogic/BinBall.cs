@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityGameFramework.Runtime;
 
 namespace BinBall
@@ -9,6 +7,7 @@ namespace BinBall
     {
         [SerializeField]
         private BinballData m_Data;
+
         private float m_Hight;
         private Collider m_Collider;
         private Rigidbody m_Rigidbody;
@@ -20,25 +19,35 @@ namespace BinBall
             private set;
         }
 
+        public void Reset()
+        {
+            Visible = true;
+            Score = 0;
+            transform.position = m_Data.StartPosition;
+            m_Rigidbody.velocity = Vector3.zero;
+        }
+
         public void PauseBall()
         {
             m_Rigidbody.useGravity = false;
             m_Rigidbody.mass = 0;
             m_Rigidbody.velocity = Vector3.zero;
         }
+
         public void ResumeBall()
         {
             m_Rigidbody.useGravity = true;
             m_Rigidbody.mass = m_Data.Mass;
         }
+
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
             m_Collider = GetComponent<SphereCollider>();
             m_Rigidbody = GetComponent<Rigidbody>();
             m_Hight = 0.5f;
-
         }
+
         protected override void OnShow(object userData)
         {
             base.OnShow(userData);
@@ -60,21 +69,18 @@ namespace BinBall
         protected override void OnHide(bool isShutdown, object userData)
         {
             base.OnHide(isShutdown, userData);
-
         }
-
-
 
         protected override void OnRecycle()
         {
             base.OnRecycle();
         }
 
-
         private void LateUpdate()
         {
             m_PreVelocity = m_Rigidbody.velocity;
         }
+
         protected override void OnUpdate(float elapseSeconds, float realElapseSeconds)
         {
             base.OnUpdate(elapseSeconds, realElapseSeconds);

@@ -31,5 +31,8 @@
     <String Key="Main.Build.Cube1" Value="立方体1" />
     <String Key="Main.Build.Cube2" Value="立方体2" />
     <String Key="Main.Build.Cube3" Value="立方体3" />
+    <String Key="Main.Build.Cube4" Value="立方体4" />
+    <String Key="Main.Show.Back" Value="←" />
+    <String Key="Main.GoToMenu" Value="×" />
 </Dictionary>
 </Dictionaries>
