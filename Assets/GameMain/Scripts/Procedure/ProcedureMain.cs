@@ -27,7 +27,7 @@ namespace BinBall
 
         private readonly Dictionary<GameMode, GameBase> m_Games = new Dictionary<GameMode, GameBase>();
         private GameBase m_CurrentGame = null;
-        private bool m_GotoMenu = false;
+        private int m_ChangeScene = 0; // 1 ：重试 2：下一关
         private float m_GotoMenuDelaySeconds = 0f;
 
         private MainForm m_MainForm;
@@ -45,7 +45,14 @@ namespace BinBall
             {
                 m_CurrentGame.GameOver = true;
             }
-            m_GotoMenu = true;
+            m_ChangeScene = 1;
+        }
+
+        public void Retry()
+        {
+            m_GameOverDelayedSeconds = -1;
+            m_CurrentGame.GameOver = true;
+            m_ChangeScene = 2;
         }
 
         #region Life Cycle
@@ -70,7 +77,7 @@ namespace BinBall
             base.OnEnter(procedureOwner);
             GameEntry.Event.Subscribe(OpenUIFormSuccessEventArgs.EventId, OnOpenMainUI);
             GameEntry.Event.Subscribe(ShowEntitySuccessEventArgs.EventId, OnShowEntitySuccess);
-            m_GotoMenu = false;
+            m_ChangeScene = 0;
             m_Ready = false;
             m_GameOverDelayedSeconds = BACK_TO_MENU_DELAY;
             InitBinBall();
@@ -102,25 +109,51 @@ namespace BinBall
             {
                 return;
             }
-            if ((m_CurrentGame != null && !m_CurrentGame.GameOver))
+            if (m_CurrentGame != null)
             {
-                m_CurrentGame.Update(elapseSeconds, realElapseSeconds);
-                if (m_CurrentGame.GameMode == GameMode.Show)
+                if (!m_CurrentGame.GameOver)
                 {
-                    m_MainForm.SetScoreText(((ShowGame)m_CurrentGame).Score);
+                    m_CurrentGame.Update(elapseSeconds, realElapseSeconds);
+                    if (m_CurrentGame.GameMode == GameMode.Show)
+                    {
+                        m_MainForm.SetScoreText(((ShowGame)m_CurrentGame).Score);
+                    }
+                    return;
                 }
-                return;
+                else if (m_ChangeScene == 0)
+                {
+                    GameEntry.UI.OpenDialog(new DialogParams
+                    {
+                        Mode = 2,
+                        Title = GameEntry.Localization.GetString("LevelResult.Title"),
+
+                        Message = GameEntry.Localization.GetString("LevelResult.Message", ((ShowGame)m_CurrentGame).Score.ToString("F2")),
+                        ConfirmText = GameEntry.Localization.GetString("Dialog.ConfirmButton"),
+                        OnClickConfirm = OnEnterToNext,
+                        CancelText = GameEntry.Localization.GetString("LevelResult.Retry"),
+                        OnClickCancel = OnRetry,
+                    });
+                    return;
+                }
             }
-            if (!m_GotoMenu)
+
+            if (m_ChangeScene == 0)
             {
-                m_GotoMenu = true;
+                m_ChangeScene = 2;
                 m_GotoMenuDelaySeconds = 0;
             }
             m_GotoMenuDelaySeconds += elapseSeconds;
 
             if (m_GotoMenuDelaySeconds >= m_GameOverDelayedSeconds)
             {
-                procedureOwner.SetData<VarInt32>("NextSceneId", GameEntry.Config.GetInt("Scene.Menu"));
+                if (m_ChangeScene == 1)
+                {
+                    procedureOwner.SetData<VarInt32>("NextSceneId", GameEntry.Config.GetInt("Scene.Level"));
+                }
+                else if (m_ChangeScene == 2)
+                {
+                    procedureOwner.SetData<VarInt32>("NextSceneId", GameEntry.Config.GetInt("Scene.Menu"));
+                }
                 ChangeState<ProcedureChangeScene>(procedureOwner);
             }
         }
@@ -151,6 +184,16 @@ namespace BinBall
             }
             m_MyBall = (BinBall)ne.Entity.Logic;
             GameEntry.UI.OpenUIForm(UIFormId.MainForm, this);
+        }
+
+        private void OnEnterToNext(object userdata)
+        {
+            GotoMenu(true);
+        }
+
+        private void OnRetry(object userdata)
+        {
+            Retry();
         }
 
         #endregion Event

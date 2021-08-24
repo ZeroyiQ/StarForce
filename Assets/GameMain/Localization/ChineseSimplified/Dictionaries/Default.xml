@@ -34,5 +34,8 @@
     <String Key="Main.Build.Cube4" Value="立方体4" />
     <String Key="Main.Show.Back" Value="←" />
     <String Key="Main.GoToMenu" Value="×" />
-</Dictionary>
+    <String Key="LevelResult.Title" Value="结果" />
+    <String Key="LevelResult.Message" Value="当前关卡得分：{0}" />
+    <String Key="LevelResult.Retry" Value="重试" />
+  </Dictionary>
 </Dictionaries>
