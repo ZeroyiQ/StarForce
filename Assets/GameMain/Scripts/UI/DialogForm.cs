@@ -65,7 +65,7 @@ namespace BinBall
 
         public void OnConfirmButtonClick()
         {
-            Close();
+            Close(true);
 
             if (m_OnClickConfirm != null)
             {
@@ -75,7 +75,7 @@ namespace BinBall
 
         public void OnCancelButtonClick()
         {
-            Close();
+            Close(true);
 
             if (m_OnClickCancel != null)
             {

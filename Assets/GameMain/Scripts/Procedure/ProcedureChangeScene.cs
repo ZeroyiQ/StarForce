@@ -19,6 +19,7 @@ namespace BinBall
         private bool m_ChangeToMenu = false;
         private bool m_IsChangeSceneComplete = false;
         private int m_BackgroundMusicId = 0;
+        private string m_ChangeScene;
 
         public override bool UseNativeDialog
         {
@@ -36,6 +37,8 @@ namespace BinBall
 
             GameEntry.Event.Subscribe(LoadSceneSuccessEventArgs.EventId, OnLoadSceneSuccess);
             GameEntry.Event.Subscribe(LoadSceneFailureEventArgs.EventId, OnLoadSceneFailure);
+            GameEntry.Event.Subscribe(UnloadSceneSuccessEventArgs.EventId, OnUnLoadSceneSuccess);
+            GameEntry.Event.Subscribe(UnloadSceneFailureEventArgs.EventId, OnUnLoadSceneFailure);
             GameEntry.Event.Subscribe(LoadSceneUpdateEventArgs.EventId, OnLoadSceneUpdate);
             GameEntry.Event.Subscribe(LoadSceneDependencyAssetEventArgs.EventId, OnLoadSceneDependencyAsset);
 
@@ -66,8 +69,20 @@ namespace BinBall
                 Log.Warning("Can not load scene '{0}' from data table.", sceneId.ToString());
                 return;
             }
-
-            GameEntry.Scene.LoadScene(AssetUtility.GetSceneAsset(drScene.AssetName), Constant.AssetPriority.SceneAsset, this);
+            m_ChangeScene = AssetUtility.GetSceneAsset(drScene.AssetName);
+            bool hasSameScene = false;
+            for (int i = 0; i < loadedSceneAssetNames.Length; i++)
+            {
+                if (loadedSceneAssetNames[i] == m_ChangeScene)
+                {
+                    hasSameScene = true;
+                    break;
+                }
+            }
+            if (!hasSameScene)
+            {
+                GameEntry.Scene.LoadScene(m_ChangeScene, Constant.AssetPriority.SceneAsset, this);
+            }
             m_BackgroundMusicId = drScene.BackgroundMusicId;
         }
 
@@ -75,6 +90,8 @@ namespace BinBall
         {
             GameEntry.Event.Unsubscribe(LoadSceneSuccessEventArgs.EventId, OnLoadSceneSuccess);
             GameEntry.Event.Unsubscribe(LoadSceneFailureEventArgs.EventId, OnLoadSceneFailure);
+            GameEntry.Event.Unsubscribe(UnloadSceneSuccessEventArgs.EventId, OnUnLoadSceneSuccess);
+            GameEntry.Event.Unsubscribe(UnloadSceneFailureEventArgs.EventId, OnUnLoadSceneFailure);
             GameEntry.Event.Unsubscribe(LoadSceneUpdateEventArgs.EventId, OnLoadSceneUpdate);
             GameEntry.Event.Unsubscribe(LoadSceneDependencyAssetEventArgs.EventId, OnLoadSceneDependencyAsset);
 
@@ -127,6 +144,22 @@ namespace BinBall
             }
 
             Log.Error("Load scene '{0}' failure, error message '{1}'.", ne.SceneAssetName, ne.ErrorMessage);
+        }
+
+        private void OnUnLoadSceneSuccess(object sender, GameEventArgs e)
+        {
+            UnloadSceneSuccessEventArgs ne = (UnloadSceneSuccessEventArgs)e;
+
+            if (ne.SceneAssetName == m_ChangeScene)
+            {
+                GameEntry.Scene.LoadScene(m_ChangeScene, Constant.AssetPriority.SceneAsset, this);
+            }
+        }
+
+        private void OnUnLoadSceneFailure(object sender, GameEventArgs e)
+        {
+            UnloadSceneFailureEventArgs ne = (UnloadSceneFailureEventArgs)e;
+            Log.Error("UnLoad scene '{0}' failure.", ne.SceneAssetName);
         }
 
         private void OnLoadSceneUpdate(object sender, GameEventArgs e)

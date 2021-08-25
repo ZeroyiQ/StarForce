@@ -34,6 +34,7 @@ namespace BinBall
         private int m_Id;
         private BinBall m_MyBall;
         private bool m_Ready;
+        private bool m_OpenDialog;
 
         public void GotoMenu(bool isImediate = false)
         {
@@ -79,8 +80,10 @@ namespace BinBall
             GameEntry.Event.Subscribe(ShowEntitySuccessEventArgs.EventId, OnShowEntitySuccess);
             m_ChangeScene = 0;
             m_Ready = false;
+            m_OpenDialog = false;
             m_GameOverDelayedSeconds = BACK_TO_MENU_DELAY;
             InitBinBall();
+
         }
 
         protected override void OnLeave(ProcedureOwner procedureOwner, bool isShutdown)
@@ -95,7 +98,7 @@ namespace BinBall
             }
             if (m_MainForm != null)
             {
-                m_MainForm.Close(isShutdown);
+                m_MainForm.Close(true);
                 m_MainForm = null;
             }
             m_MyBall = null;
@@ -122,17 +125,7 @@ namespace BinBall
                 }
                 else if (m_ChangeScene == 0)
                 {
-                    GameEntry.UI.OpenDialog(new DialogParams
-                    {
-                        Mode = 2,
-                        Title = GameEntry.Localization.GetString("LevelResult.Title"),
-
-                        Message = GameEntry.Localization.GetString("LevelResult.Message", ((ShowGame)m_CurrentGame).Score.ToString("F2")),
-                        ConfirmText = GameEntry.Localization.GetString("Dialog.ConfirmButton"),
-                        OnClickConfirm = OnEnterToNext,
-                        CancelText = GameEntry.Localization.GetString("LevelResult.Retry"),
-                        OnClickCancel = OnRetry,
-                    });
+                    TryOpenDialog();
                     return;
                 }
             }
@@ -148,11 +141,11 @@ namespace BinBall
             {
                 if (m_ChangeScene == 1)
                 {
-                    procedureOwner.SetData<VarInt32>("NextSceneId", GameEntry.Config.GetInt("Scene.Level"));
+                    procedureOwner.SetData<VarInt32>("NextSceneId", GameEntry.Config.GetInt("Scene.Menu"));
                 }
                 else if (m_ChangeScene == 2)
                 {
-                    procedureOwner.SetData<VarInt32>("NextSceneId", GameEntry.Config.GetInt("Scene.Menu"));
+                    procedureOwner.SetData<VarInt32>("NextSceneId", GameEntry.Config.GetInt("Scene.Level"));
                 }
                 ChangeState<ProcedureChangeScene>(procedureOwner);
             }
@@ -224,7 +217,25 @@ namespace BinBall
             m_CurrentGame.Initialize(m_MyBall);
             m_MainForm.SetMode(m_CurrentGame.GameMode);
         }
+        private void TryOpenDialog()
+        {
+            if (!m_OpenDialog)
+            {
+                m_OpenDialog = true;
+                GameEntry.UI.OpenDialog(new DialogParams
+                {
+                    Mode = 2,
+                    Title = GameEntry.Localization.GetString("LevelResult.Title"),
 
+                    Message = GameEntry.Localization.GetString("LevelResult.Message", ((ShowGame)m_CurrentGame).Score.ToString("F2")),
+                    ConfirmText = GameEntry.Localization.GetString("Dialog.ConfirmButton"),
+                    OnClickConfirm = OnEnterToNext,
+                    CancelText = GameEntry.Localization.GetString("LevelResult.Retry"),
+                    OnClickCancel = OnRetry,
+                });
+            }
+           
+        }
         #endregion private
     }
 }
