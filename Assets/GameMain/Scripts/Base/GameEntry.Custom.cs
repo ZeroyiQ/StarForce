@@ -20,7 +20,7 @@ namespace BinBall
             private set;
         }
 
-        public static HPBarComponent HPBar
+        public static OperationUIComponent OperationUI
         {
             get;
             private set;
@@ -29,7 +29,7 @@ namespace BinBall
         private static void InitCustomComponents()
         {
             BuiltinData = UnityGameFramework.Runtime.GameEntry.GetComponent<BuiltinDataComponent>();
-            HPBar = UnityGameFramework.Runtime.GameEntry.GetComponent<HPBarComponent>();
+            OperationUI = UnityGameFramework.Runtime.GameEntry.GetComponent<OperationUIComponent>();
         }
     }
 }

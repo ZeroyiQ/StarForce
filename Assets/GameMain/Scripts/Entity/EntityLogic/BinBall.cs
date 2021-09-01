@@ -88,13 +88,13 @@ namespace BinBall
 
         private void OnCollisionEnter(Collision other)
         {
-            float vy = Mathf.Sqrt(Mathf.Abs(Physics.gravity.y * m_Hight * 2));
+            //float vy = Mathf.Sqrt(Mathf.Abs(Physics.gravity.y * m_Hight * 2));
             ContactPoint contactPoint = other.contacts[0];
 
             Vector3 newDir = Vector3.Reflect(m_PreVelocity.normalized, contactPoint.normal);
             Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, newDir);
             transform.rotation = rotation;
-            m_Rigidbody.velocity = newDir.normalized * m_PreVelocity.y / m_PreVelocity.normalized.y * 0.8f;
+            m_Rigidbody.velocity = newDir.normalized * m_PreVelocity.y / m_PreVelocity.normalized.y * 0.65f;
             Log.Info($"{m_Rigidbody.velocity.ToString()}");
             if (other.gameObject.tag == "Wall")
             {
