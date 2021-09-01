@@ -206,6 +206,10 @@ namespace BinBall
         #endregion Init
 
         #region private
+        public bool IsBuildMode()
+        {
+            return m_CurrentGame != null && m_CurrentGame.GameMode == GameMode.Build;
+        }
 
         public void SetGameMode(GameMode gameMode)
         {

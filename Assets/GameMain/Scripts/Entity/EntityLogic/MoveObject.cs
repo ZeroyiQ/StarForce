@@ -6,7 +6,6 @@
 //------------------------------------------------------------
 
 using UnityEngine;
-using UnityGameFramework.Runtime;
 
 namespace BinBall
 {
@@ -15,7 +14,10 @@ namespace BinBall
     /// </summary>
     public class MoveObject : Entity
     {
-
+        private Vector3 startPos;
+        private Vector3 endPos;
+        private Vector3 offset;
+        private bool m_ShowRotationOp;
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
@@ -25,54 +27,55 @@ namespace BinBall
         protected override void OnShow(object userData)
         {
             base.OnShow(userData);
+            m_ShowRotationOp = false;
         }
-
-
-        //用于 实现可以拖动物体移动 
-        //先写一个方法  将屏幕坐标转换成世界装备
-        //或表达为 将屏幕空间转化为世界空间 
-
-        Vector3 MyScreenPointToWorldPoint(Vector3 ScreenPoint, Transform target)
-        {
-            //1 得到物体在主相机的xx方向
-            Vector3 dir = (target.position - Camera.main.transform.position);
-            //2 计算投影 (计算单位向量上的法向量)
-            Vector3 norVec = Vector3.Project(dir, Camera.main.transform.forward);
-            //返回世界空间
-            return Camera.main.ViewportToWorldPoint
-                (
-                   new Vector3(
-                       ScreenPoint.x / Screen.width,
-                       ScreenPoint.y / Screen.height,
-                       norVec.magnitude
-                   )
-                );
-
-        }
-
-        Vector3 startPos;
-        Vector3 endPos;
-        Vector3 offset;
 
         private void OnMouseDown()
         {
-            StarDrag();
+            if (Verify())
+            {
+                StarDrag();
+            }
         }
 
         private void OnMouseDrag()
         {
-            Drag();
+            if (Verify())
+            {
+                Drag();
+            }
         }
 
-        public void StarDrag(Vector2? position = null)
+        private void OnMouseUp()
         {
-            if (position != null)
+            transform.position = ConstraintUtility.GetPositionInLimitArea(transform.position, new Vector4(-6, 6, 6, -6), .5f);
+        }
+
+        private void OnMouseUpAsButton()
+        {
+            if (Verify())
             {
-                // transform.position = new Vector3(position.x, position.y, 0);
+                ChangeRotationMode();
             }
+        }
+
+        private bool Verify()
+        {
+            var procedure = GameEntry.Procedure.CurrentProcedure;
+            if (procedure.GetType() == typeof(ProcedureMain))
+            {
+                var procedureMain = procedure as ProcedureMain;
+                return procedureMain.IsBuildMode();
+            }
+            return false;
+        }
+
+        private void StarDrag(Vector2? position = null)
+        {
             startPos = MyScreenPointToWorldPoint(Input.mousePosition, transform);
         }
-        public void Drag()
+
+        private void Drag()
         {
             endPos = MyScreenPointToWorldPoint(Input.mousePosition, transform);
             //计算偏移量
@@ -81,6 +84,22 @@ namespace BinBall
             transform.position += offset;
             //这一次拖拽的终点变成了下一次拖拽的起点
             startPos = endPos;
+        }
+
+
+        private Vector3 MyScreenPointToWorldPoint(Vector3 ScreenPoint, Transform target)
+        {
+            //1 得到物体在主相机的xx方向
+            Vector3 dir = (target.position - Camera.main.transform.position);
+            //2 计算投影 (计算单位向量上的法向量)
+            Vector3 norVec = Vector3.Project(dir, Camera.main.transform.forward);
+            //返回世界空间
+            return Camera.main.ViewportToWorldPoint(new Vector3(ScreenPoint.x / Screen.width, ScreenPoint.y / Screen.height, norVec.magnitude));
+        }
+        private void ChangeRotationMode()
+        {
+            m_ShowRotationOp = !m_ShowRotationOp;
+            // TODO 旋转 UI
         }
     }
 }
