@@ -44,7 +44,10 @@ namespace BinBall
         {
             entityComponent.ShowEntity(typeof(BinBall), "BinBall", Constant.AssetPriority.BinBall, data);
         }
-
+        public static void ShowBuildCube(this EntityComponent entityComponent, BuilderCubeData data)
+        {
+            entityComponent.ShowEntity(typeof(BuilderCube), "Builder", Constant.AssetPriority.Builder, data);
+        }
         private static void ShowEntity(this EntityComponent entityComponent, Type logicType, string entityGroup, int priority, EntityData data)
         {
             if (data == null)

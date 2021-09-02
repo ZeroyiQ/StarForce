@@ -13,7 +13,6 @@ namespace BinBall
         public void OnPointerDown(PointerEventData eventData)
         {
             DragScrollRect.Instance.ChooseCell(Template);
-            Log.Error("1111");
         }
     }
 }

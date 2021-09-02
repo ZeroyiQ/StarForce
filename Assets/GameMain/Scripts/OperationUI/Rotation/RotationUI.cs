@@ -18,19 +18,21 @@ namespace BinBall
             down.onClick.AddListener(OnClickDown);
         }
 
-        private void OnClickUp()
+        public void OnClickUp()
         {
-            if (Owner != null && Owner.GetType()== typeof(MoveObject))
+            if (Owner != null && Owner.GetType().BaseType == typeof(MoveObject))
             {
                 MoveObject obj = Owner as MoveObject;
+                obj.ChangeRoataion(30);
             }
         }
 
-        private void OnClickDown()
+        public void OnClickDown()
         {
-            if (Owner != null && Owner.GetType() == typeof(MoveObject))
+            if (Owner != null && Owner.GetType().BaseType == typeof(MoveObject))
             {
                 MoveObject obj = Owner as MoveObject;
+                obj.ChangeRoataion(-30);
             }
         }
 

@@ -1,14 +1,16 @@
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
 namespace BinBall
 {
     public class DragScrollRect : ScrollRect, IPointerExitHandler
     {
         private static DragScrollRect m_Instance;
         public static DragScrollRect Instance { get => m_Instance; }
-        public GameObject NowObj;
-        bool isExit = false;
+        public int NowObj;
+        private bool isExit = false;
+
         protected override void Awake()
         {
             base.Awake();
@@ -20,13 +22,13 @@ namespace BinBall
 
         public void ChooseCell(GameObject gameObject)
         {
-                if (NowObj == null && ExitUI())
-                {
-                    Debug.Log("生成了");
-                    NowObj = GameObject.Instantiate(gameObject);
-                    isExit = true;
-                }
+            GameEntry.Entity.ShowBuildCube(new BuilderCubeData(GameEntry.Entity.GenerateSerialId(), 70004)
+            {
+                Position = Vector3.zero,
+                LocalScale = new Vector3(5, .5f, 1)
+            });
         }
+
         public override void OnDrag(PointerEventData eventData)
         {
             if (!isExit)
@@ -34,10 +36,12 @@ namespace BinBall
                 base.OnDrag(eventData);
             }
         }
+
         public override void OnEndDrag(PointerEventData eventData)
         {
             base.OnEndDrag(eventData);
         }
+
         public override void OnBeginDrag(PointerEventData eventData)
         {
             isExit = false;
@@ -48,7 +52,7 @@ namespace BinBall
         /// 是否离开UI
         /// </summary>
         /// <returns></returns>
-        bool ExitUI()
+        private bool ExitUI()
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
         if (!EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
@@ -66,5 +70,4 @@ namespace BinBall
             OnEndDrag(eventData);
         }
     }
-
 }

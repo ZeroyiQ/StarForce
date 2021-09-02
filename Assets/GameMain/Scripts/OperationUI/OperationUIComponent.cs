@@ -20,7 +20,7 @@ namespace BinBall
         private List<OperationUI> m_ActiveOperation = null;
         private Canvas m_CachedCanvas = null;
 
-        public void ShowRotationUI(Entity entity)
+        public RotationUI ShowRotationUI(Entity entity)
         {
             RotationUI ui = GetActiveOperation(entity) as RotationUI;
             if (ui == null)
@@ -29,6 +29,7 @@ namespace BinBall
                 m_ActiveOperation.Add(ui);
             }
             ui.Init(entity, m_CachedCanvas);
+            return ui;
         }
 
         public void HideRotationUI(RotationUI ui)

@@ -10,7 +10,10 @@ namespace BinBall
 
         private Canvas m_ParentCanvas = null;
         private RectTransform m_CachedTransform = null;
+        private RectTransform CanchedTransform { get => m_CachedTransform ?? (m_CachedTransform = GetComponent<RectTransform>()); }
         private CanvasGroup m_CachedCanvasGroup = null;
+        private CanvasGroup CachedCanvasGroup { get => m_CachedCanvasGroup ?? (m_CachedCanvasGroup = GetComponent<CanvasGroup>()); }
+
         private Entity m_Owner = null;
         private int m_OwnerId = 0;
 
@@ -34,7 +37,7 @@ namespace BinBall
 
             gameObject.SetActive(true);
 
-            m_CachedCanvasGroup.alpha = 1f;
+            CachedCanvasGroup.alpha = 1f;
             if (m_Owner != owner || m_OwnerId != owner.Id)
             {
                 m_Owner = owner;
@@ -60,7 +63,7 @@ namespace BinBall
                 if (RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)m_ParentCanvas.transform, screenPosition,
                     m_ParentCanvas.worldCamera, out position))
                 {
-                    m_CachedTransform.localPosition = position;
+                    CanchedTransform.localPosition = position;
                 }
             }
 
@@ -69,26 +72,9 @@ namespace BinBall
 
         public void Reset()
         {
-            m_CachedCanvasGroup.alpha = 1f;
+            CachedCanvasGroup.alpha = 1f;
             m_Owner = null;
             gameObject.SetActive(false);
-        }
-
-        private void Awake()
-        {
-            m_CachedTransform = GetComponent<RectTransform>();
-            if (m_CachedTransform == null)
-            {
-                Log.Error("RectTransform is invalid.");
-                return;
-            }
-
-            m_CachedCanvasGroup = GetComponent<CanvasGroup>();
-            if (m_CachedCanvasGroup == null)
-            {
-                Log.Error("CanvasGroup is invalid.");
-                return;
-            }
         }
     }
 }
