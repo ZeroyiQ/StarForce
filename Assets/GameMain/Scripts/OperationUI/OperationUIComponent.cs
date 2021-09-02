@@ -11,6 +11,9 @@ namespace BinBall
         private RotationUI m_RotationOpUI;
 
         [SerializeField]
+        private DestoryUI m_DestoryOpUI;
+
+        [SerializeField]
         private Transform m_InstanceRoot = null;
 
         [SerializeField]
@@ -22,8 +25,8 @@ namespace BinBall
 
         public RotationUI ShowRotationUI(Entity entity)
         {
-            RotationUI ui = GetActiveOperation(entity) as RotationUI;
-            if (ui == null)
+            RotationUI ui = null;
+            if (!TryGetActiveOperation(entity, ref ui))
             {
                 ui = CreateRotationUI(entity);
                 m_ActiveOperation.Add(ui);
@@ -32,10 +35,18 @@ namespace BinBall
             return ui;
         }
 
-        public void HideRotationUI(RotationUI ui)
+        public DestoryUI ShowDestoryUI(Entity entity)
         {
-            HideOperationUI(ui);
+            DestoryUI ui = null;
+            if (!TryGetActiveOperation(entity, ref ui))
+            {
+                ui = CreateDestoryUI(entity);
+                m_ActiveOperation.Add(ui);
+            }
+            ui.Init(entity, m_CachedCanvas);
+            return ui;
         }
+
 
         public void HideOperationUI(OperationUI ui)
         {
@@ -71,22 +82,23 @@ namespace BinBall
 
         #region private
 
-        private OperationUI GetActiveOperation(Entity entity)
+        private bool TryGetActiveOperation<T>(Entity entity, ref T operation) where T : OperationUI
         {
             if (entity == null)
             {
-                return null;
+                return false;
             }
 
             for (int i = 0; i < m_ActiveOperation.Count; i++)
             {
-                if (m_ActiveOperation[i].Owner == entity)
+                if (m_ActiveOperation[i].Owner == entity && m_ActiveOperation[i].GetType() == typeof(T))
                 {
-                    return m_ActiveOperation[i];
+                    operation = m_ActiveOperation[i] as T;
+                    return true;
                 }
             }
 
-            return null;
+            return false;
         }
 
         private RotationUI CreateRotationUI(Entity entity)
@@ -100,6 +112,25 @@ namespace BinBall
             else
             {
                 ui = Instantiate(m_RotationOpUI);
+                Transform transform = ui.GetComponent<Transform>();
+                transform.SetParent(m_InstanceRoot);
+                transform.localScale = Vector3.one;
+                m_OperationPool.Register(OperationUIObject.Create(ui), true);
+            }
+            return ui;
+        }
+
+        private DestoryUI CreateDestoryUI(Entity entity)
+        {
+            DestoryUI ui = null;
+            OperationUIObject obj = m_OperationPool.Spawn();
+            if (obj != null)
+            {
+                ui = obj.Target as DestoryUI;
+            }
+            else
+            {
+                ui = Instantiate(m_DestoryOpUI);
                 Transform transform = ui.GetComponent<Transform>();
                 transform.SetParent(m_InstanceRoot);
                 transform.localScale = Vector3.one;

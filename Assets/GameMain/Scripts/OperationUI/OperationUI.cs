@@ -1,13 +1,10 @@
-﻿using System.Collections;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using UnityGameFramework.Runtime;
 
 namespace BinBall
 {
     public class OperationUI : MonoBehaviour
     {
-
         private Canvas m_ParentCanvas = null;
         private RectTransform m_CachedTransform = null;
         private RectTransform CanchedTransform { get => m_CachedTransform ?? (m_CachedTransform = GetComponent<RectTransform>()); }
@@ -16,6 +13,7 @@ namespace BinBall
 
         private Entity m_Owner = null;
         private int m_OwnerId = 0;
+        protected Vector2 m_ShowOffset = Vector2.zero;
 
         public Entity Owner
         {
@@ -63,7 +61,7 @@ namespace BinBall
                 if (RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)m_ParentCanvas.transform, screenPosition,
                     m_ParentCanvas.worldCamera, out position))
                 {
-                    CanchedTransform.localPosition = position;
+                    CanchedTransform.localPosition = position + m_ShowOffset;
                 }
             }
 

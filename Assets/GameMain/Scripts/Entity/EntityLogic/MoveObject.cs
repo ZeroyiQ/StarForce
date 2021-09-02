@@ -1,5 +1,5 @@
-﻿using UnityEngine.EventSystems;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace BinBall
 {
@@ -11,8 +11,20 @@ namespace BinBall
         private Vector3 startPos;
         private Vector3 endPos;
         private Vector3 offset;
-        private bool m_ShowRotationOp;
+        private bool m_OperationUIVisible;
         private RotationUI m_RotationUI;
+        private DestoryUI m_DestoryUI;
+
+        public void ChangeRoataion(int value)
+        {
+            transform.AddLocalRoationZ(value);
+        }
+
+        public void DestoryThis()
+        {
+            GameEntry.Entity.HideEntity(this);
+            HideAllUI();
+        }
 
         protected override void OnInit(object userData)
         {
@@ -23,7 +35,7 @@ namespace BinBall
         protected override void OnShow(object userData)
         {
             base.OnShow(userData);
-            m_ShowRotationOp = false;
+            m_OperationUIVisible = false;
         }
 
         private void OnMouseDown()
@@ -51,7 +63,7 @@ namespace BinBall
         {
             if (Verify() && ExitUI())
             {
-                ChangeRotationMode();
+                ChangeOperationUIVisible();
             }
         }
 
@@ -92,37 +104,26 @@ namespace BinBall
             return Camera.main.ViewportToWorldPoint(new Vector3(ScreenPoint.x / Screen.width, ScreenPoint.y / Screen.height, norVec.magnitude));
         }
 
-        private void ChangeRotationMode()
+        private void ChangeOperationUIVisible()
         {
-            m_ShowRotationOp = !m_ShowRotationOp;
-            // TODO 旋转 UI
-            if (m_ShowRotationOp)
+            m_OperationUIVisible = !m_OperationUIVisible;
+            if (m_OperationUIVisible)
             {
                 m_RotationUI = GameEntry.OperationUI.ShowRotationUI(this);
+                m_DestoryUI = GameEntry.OperationUI.ShowDestoryUI(this);
             }
             else
             {
-                if (m_RotationUI != null)
-                {
-                    GameEntry.OperationUI.HideRotationUI(m_RotationUI);
-                }
+                HideAllUI();
             }
-        }
-
-        public void ChangeRoataion(int value)
-        {
-            transform.AddLocalRoationZ(value);
         }
 
         protected override void OnUpdate(float elapseSeconds, float realElapseSeconds)
         {
             base.OnUpdate(elapseSeconds, realElapseSeconds);
-            if (!Verify() && m_ShowRotationOp)
+            if (!Verify() && m_OperationUIVisible)
             {
-                if (m_RotationUI != null)
-                {
-                    GameEntry.OperationUI.HideRotationUI(m_RotationUI);
-                }
+                HideAllUI();
             }
         }
 
@@ -141,6 +142,18 @@ namespace BinBall
 #endif
             else
                 return false;
+        }
+
+        private void HideAllUI()
+        {
+            if (m_RotationUI != null)
+            {
+                GameEntry.OperationUI.HideOperationUI(m_RotationUI);
+            }
+            if (m_DestoryUI != null)
+            {
+                GameEntry.OperationUI.HideOperationUI(m_DestoryUI);
+            }
         }
     }
 }
