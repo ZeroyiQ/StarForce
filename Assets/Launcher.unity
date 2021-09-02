@@ -875,7 +875,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 200a28e4e439cde41909e0774877987f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RotationOpUI: {fileID: 1937878445652202122, guid: efff54f88b0434b4cbddb5fb2f10ad59,
+  m_RotationOpUI: {fileID: 1937878445652202122, guid: cb620663c9bb28b46a166ae253651a81,
+    type: 3}
+  m_DestoryOpUI: {fileID: 1078443622724341716, guid: efff54f88b0434b4cbddb5fb2f10ad59,
     type: 3}
   m_InstanceRoot: {fileID: 2137563027}
   m_InstancePoolCapacity: 4
