@@ -7,12 +7,14 @@ namespace BinBall
     public class DragScrollRectCell : MonoBehaviour, IPointerDownHandler
     {
         [SerializeField]
-        private int m_ID;
-        [SerializeField]
-        public GameObject Template;
+        private BuilderType m_Builder;
+        private bool tryToCreate = false;
+
+
+
         public void OnPointerDown(PointerEventData eventData)
         {
-            DragScrollRect.Instance.ChooseCell(Template);
+            DragScrollRect.Instance.TryCreateBuilder(m_Builder, Input.mousePosition);
         }
     }
 }

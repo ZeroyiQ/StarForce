@@ -13,6 +13,7 @@ namespace BinBall
         private Rigidbody m_Rigidbody;
 
         private Vector3 m_PreVelocity = Vector3.zero;
+
         public float Score
         {
             get;
@@ -88,17 +89,31 @@ namespace BinBall
 
         private void OnCollisionEnter(Collision other)
         {
-            //float vy = Mathf.Sqrt(Mathf.Abs(Physics.gravity.y * m_Hight * 2));
-            ContactPoint contactPoint = other.contacts[0];
-
-            Vector3 newDir = Vector3.Reflect(m_PreVelocity.normalized, contactPoint.normal);
-            Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, newDir);
-            transform.rotation = rotation;
-            m_Rigidbody.velocity = newDir.normalized * m_PreVelocity.y / m_PreVelocity.normalized.y * 0.65f;
-            Log.Info($"{m_Rigidbody.velocity.ToString()}");
-            if (other.gameObject.tag == "Wall")
+            if (Verify())
             {
-                Score += 10;
+                ContactPoint contactPoint = other.contacts[0];
+
+                Vector3 newDir = Vector3.Reflect(m_PreVelocity.normalized, contactPoint.normal);
+                Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, newDir);
+                transform.rotation = rotation;
+
+                MainForm ui = GameEntry.UI.GetUIForm(UIFormId.MainForm) as MainForm;
+                float addV = 0f;
+                float addScore = 0f;
+                if (other.gameObject.tag == "Wall")
+                {
+                    addScore = 10f;
+                }
+                if (other.gameObject.tag == "BombBoard")
+                {
+                    addV = .2f;
+                    addScore = 5f;
+                }
+                Score += addScore;
+                var procedure = GameEntry.Procedure.GetProcedure<ProcedureMain>() as ProcedureMain;
+                procedure.ShowAddScoreTip(addScore.ToString());
+                m_Rigidbody.velocity = newDir.normalized * (m_PreVelocity.y / m_PreVelocity.normalized.y) * (m_Data.Bounciness + addV);
+                Log.Info($"{m_Rigidbody.velocity.ToString()}");
             }
         }
 
@@ -109,6 +124,17 @@ namespace BinBall
                 GameEntry.Entity.HideEntity(this);
                 Log.Info($"End Game.");
             }
+        }
+
+        private bool Verify()
+        {
+            var procedure = GameEntry.Procedure.CurrentProcedure;
+            if (procedure.GetType() == typeof(ProcedureMain))
+            {
+                var procedureMain = procedure as ProcedureMain;
+                return procedureMain.IsShowMode();
+            }
+            return false;
         }
     }
 }

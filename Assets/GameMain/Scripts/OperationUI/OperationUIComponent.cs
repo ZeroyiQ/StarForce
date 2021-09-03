@@ -47,7 +47,6 @@ namespace BinBall
             return ui;
         }
 
-
         public void HideOperationUI(OperationUI ui)
         {
             ui.Reset();
@@ -57,11 +56,19 @@ namespace BinBall
 
         #region cycle life
 
+        protected override void Awake()
+        {
+            base.Awake();
+            m_CachedCanvas = m_InstanceRoot.GetComponent<Canvas>();
+            m_ActiveOperation = new List<OperationUI>();
+        }
+
         private void Start()
         {
-            m_CachedCanvas = m_InstanceRoot.GetComponent<Canvas>();
-            m_OperationPool = GameEntry.ObjectPool.CreateSingleSpawnObjectPool<OperationUIObject>("OperationUI", m_InstancePoolCapacity);
-            m_ActiveOperation = new List<OperationUI>();
+            if (m_OperationPool == null)
+            {
+                m_OperationPool = GameEntry.ObjectPool.CreateSingleSpawnObjectPool<OperationUIObject>("OperationUI", m_InstancePoolCapacity);
+            }
         }
 
         private void Update()
@@ -81,6 +88,8 @@ namespace BinBall
         #endregion cycle life
 
         #region private
+
+
 
         private bool TryGetActiveOperation<T>(Entity entity, ref T operation) where T : OperationUI
         {

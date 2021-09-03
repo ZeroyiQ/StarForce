@@ -7,6 +7,7 @@
 
 using GameFramework.Event;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityGameFramework.Runtime;
 using ProcedureOwner = GameFramework.Fsm.IFsm<GameFramework.Procedure.IProcedureManager>;
 
@@ -35,6 +36,10 @@ namespace BinBall
         private BinBall m_MyBall;
         private bool m_Ready;
         private bool m_OpenDialog;
+
+        public static Vector4 LimitArea = new Vector4(-6, 6, 6, -6);
+
+        private int showRecycleText = 0;
 
         public void GotoMenu(bool isImediate = false)
         {
@@ -76,6 +81,7 @@ namespace BinBall
         protected override void OnEnter(ProcedureOwner procedureOwner)
         {
             base.OnEnter(procedureOwner);
+            CalculateLimtArea();
             GameEntry.Event.Subscribe(OpenUIFormSuccessEventArgs.EventId, OnOpenMainUI);
             GameEntry.Event.Subscribe(ShowEntitySuccessEventArgs.EventId, OnShowEntitySuccess);
             m_ChangeScene = 0;
@@ -83,7 +89,6 @@ namespace BinBall
             m_OpenDialog = false;
             m_GameOverDelayedSeconds = BACK_TO_MENU_DELAY;
             InitBinBall();
-
         }
 
         protected override void OnLeave(ProcedureOwner procedureOwner, bool isShutdown)
@@ -206,21 +211,7 @@ namespace BinBall
         #endregion Init
 
         #region private
-        public bool IsBuildMode()
-        {
-            return m_CurrentGame != null && m_CurrentGame.GameMode == GameMode.Build;
-        }
 
-        public void SetGameMode(GameMode gameMode)
-        {
-            if (m_CurrentGame != null)
-            {
-                m_CurrentGame.Shutdown();
-            }
-            m_CurrentGame = m_Games[gameMode];
-            m_CurrentGame.Initialize(m_MyBall);
-            m_MainForm.SetMode(m_CurrentGame.GameMode);
-        }
         private void TryOpenDialog()
         {
             if (!m_OpenDialog)
@@ -238,8 +229,65 @@ namespace BinBall
                     OnClickCancel = OnRetry,
                 });
             }
-           
         }
+
+        private void CalculateLimtArea()
+        {
+            Vector4 padding = new Vector4(-.6f, 3f, 0.6f, -3f);
+            Vector3 limitLeftUp = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(-Camera.main.transform.position.z)));
+            Vector3 limitRightDown = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, Mathf.Abs(-Camera.main.transform.position.z)));
+
+            LimitArea = new Vector4(limitLeftUp.x, limitRightDown.y, limitRightDown.x, limitLeftUp.y) - padding;
+            Log.Error($"LimitArea:{LimitArea.ToString()}");
+        }
+
         #endregion private
+
+        #region public
+
+        public bool IsBuildMode()
+        {
+            return m_CurrentGame != null && m_CurrentGame.GameMode == GameMode.Build;
+        }
+
+        public bool IsShowMode()
+        {
+            return m_CurrentGame != null && m_CurrentGame.GameMode == GameMode.Show;
+        }
+
+        public void ShowAddScoreTip(string message)
+        {
+            if (IsShowMode() && m_MainForm != null)
+            {
+                m_MainForm.AddtionScore(message);
+            }
+        }
+
+        public void SetGameMode(GameMode gameMode)
+        {
+            if (m_CurrentGame != null)
+            {
+                m_CurrentGame.Shutdown();
+            }
+            m_CurrentGame = m_Games[gameMode];
+            m_CurrentGame.Initialize(m_MyBall);
+            m_MainForm.SetMode(m_CurrentGame.GameMode);
+            showRecycleText = 0;
+        }
+
+        public void SetRecycleTextVisual(bool enable)
+        {
+            if (enable)
+            {
+                showRecycleText++;
+            }
+            else
+            {
+                showRecycleText--;
+            }
+            m_MainForm.RecycleTextVisual(showRecycleText > 0);
+        }
+
+        #endregion public
     }
 }

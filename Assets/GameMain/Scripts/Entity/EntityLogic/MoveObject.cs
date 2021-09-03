@@ -14,6 +14,10 @@ namespace BinBall
         private bool m_OperationUIVisible;
         private RotationUI m_RotationUI;
         private DestoryUI m_DestoryUI;
+        protected Vector3 TransformConstraint
+        {
+            set { transform.position = ConstraintUtility.GetPositionInLimitArea(value, ProcedureMain.LimitArea, .5f); }
+        }
 
         public void ChangeRoataion(int value)
         {
@@ -51,12 +55,16 @@ namespace BinBall
             if (Verify())
             {
                 Drag();
+                var procedure = GameEntry.Procedure.GetProcedure<ProcedureMain>() as ProcedureMain;
+                procedure.SetRecycleTextVisual(true);
             }
         }
 
         private void OnMouseUp()
         {
-            transform.position = ConstraintUtility.GetPositionInLimitArea(transform.position, new Vector4(-6, 6, 6, -6), .5f);
+            TransformConstraint = transform.position;
+            var procedure = GameEntry.Procedure.GetProcedure<ProcedureMain>() as ProcedureMain;
+            procedure.SetRecycleTextVisual(false);
         }
 
         private void OnMouseUpAsButton()
@@ -80,12 +88,12 @@ namespace BinBall
 
         private void StarDrag(Vector2? position = null)
         {
-            startPos = MyScreenPointToWorldPoint(Input.mousePosition, transform);
+            startPos = TransformExtension.TransformScreentPointToWorld(Input.mousePosition, transform);
         }
 
         private void Drag()
         {
-            endPos = MyScreenPointToWorldPoint(Input.mousePosition, transform);
+            endPos = TransformExtension.TransformScreentPointToWorld(Input.mousePosition, transform);
             //计算偏移量
             offset = endPos - startPos;
             //让cube移动
@@ -94,23 +102,12 @@ namespace BinBall
             startPos = endPos;
         }
 
-        private Vector3 MyScreenPointToWorldPoint(Vector3 ScreenPoint, Transform target)
-        {
-            //1 得到物体在主相机的xx方向
-            Vector3 dir = (target.position - Camera.main.transform.position);
-            //2 计算投影 (计算单位向量上的法向量)
-            Vector3 norVec = Vector3.Project(dir, Camera.main.transform.forward);
-            //返回世界空间
-            return Camera.main.ViewportToWorldPoint(new Vector3(ScreenPoint.x / Screen.width, ScreenPoint.y / Screen.height, norVec.magnitude));
-        }
-
         private void ChangeOperationUIVisible()
         {
             m_OperationUIVisible = !m_OperationUIVisible;
             if (m_OperationUIVisible)
             {
                 m_RotationUI = GameEntry.OperationUI.ShowRotationUI(this);
-                m_DestoryUI = GameEntry.OperationUI.ShowDestoryUI(this);
             }
             else
             {
@@ -150,10 +147,16 @@ namespace BinBall
             {
                 GameEntry.OperationUI.HideOperationUI(m_RotationUI);
             }
-            if (m_DestoryUI != null)
+            
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.tag == "EndPoint")
             {
-                GameEntry.OperationUI.HideOperationUI(m_DestoryUI);
+                DestoryThis();
             }
         }
+
     }
 }
