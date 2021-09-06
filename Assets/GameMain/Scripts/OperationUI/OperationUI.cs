@@ -51,7 +51,12 @@ namespace BinBall
             {
                 return false;
             }
+            UpdateSelfPosition();
+            return true;
+        }
 
+        protected virtual void UpdateSelfPosition()
+        {
             if (m_Owner != null && Owner.Available && Owner.Id == m_OwnerId)
             {
                 Vector3 worldPosition = m_Owner.CachedTransform.position + Vector3.forward;
@@ -64,10 +69,7 @@ namespace BinBall
                     CanchedTransform.localPosition = position + m_ShowOffset;
                 }
             }
-
-            return true;
         }
-
         public void Reset()
         {
             CachedCanvasGroup.alpha = 1f;

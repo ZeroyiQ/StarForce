@@ -50,6 +50,7 @@ namespace BinBall
                 m_CurrentGame.GameOver = true;
             }
             m_ChangeScene = 1;
+            m_CurrentGame = null;
         }
 
         public void Retry()
@@ -57,6 +58,7 @@ namespace BinBall
             m_GameOverDelayedSeconds = -1;
             m_CurrentGame.GameOver = true;
             m_ChangeScene = 2;
+            m_CurrentGame = null;
         }
 
         #region Life Cycle

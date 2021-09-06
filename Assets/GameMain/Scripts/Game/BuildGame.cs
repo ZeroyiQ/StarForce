@@ -103,19 +103,7 @@ namespace BinBall
         private bool CheckUserInput()
         {
 #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
-        if (Input.touches.Length > ) {
-            if (!isTouchInput) {
-                isTouchInput = true;
-                touchID = Input.touches[].fingerId;
-                return true;
-            } else if (Input.GetTouch (touchID).phase == TouchPhase.Ended) {
-                isTouchInput = false;
-                return false;
-            } else {
-                return true;
-            }
-        }
-        return false;
+            return Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved;
 #else
             return Input.GetMouseButton(0);
 #endif

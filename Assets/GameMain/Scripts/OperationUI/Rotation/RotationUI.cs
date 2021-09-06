@@ -41,7 +41,7 @@ namespace BinBall
                     MoveObject obj = Owner as MoveObject;
                     float angle = (touchDeltaPosition.y) * 10;
                     obj.ChangeRoataion(angle);
-                    down.transform.Rotate(Owner.gameObject.transform.position, angle);
+                    UpdateUIPosition();
                 }
 #else
                 if (Input.GetMouseButton(0))
@@ -49,11 +49,24 @@ namespace BinBall
                     MoveObject obj = Owner as MoveObject;
                     float angle = Input.GetAxis("Mouse Y") * 10;
                     obj.ChangeRoataion(angle);
-                    angle = obj.transform.eulerAngles.z * Mathf.PI / 180;
-                    down.transform.localPosition = new Vector3(-150 + 150 * Mathf.Cos(angle), 150 * Mathf.Sin(angle), 0);
                 }
 #endif
             }
+        }
+
+        private void UpdateUIPosition()
+        {
+            if (Owner != null)
+            {
+                var angle = Owner.transform.eulerAngles.z * Mathf.PI / 180;
+                down.transform.localPosition = new Vector3(-150 + 150 * Mathf.Cos(angle), 150 * Mathf.Sin(angle), 0);
+            }
+        }
+
+        protected override void UpdateSelfPosition()
+        {
+            base.UpdateSelfPosition();
+            UpdateUIPosition();
         }
     }
 }

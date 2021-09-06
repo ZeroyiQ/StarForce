@@ -70,27 +70,30 @@ namespace BinBall
             if (m_OnClickConfirm != null)
             {
                 m_OnClickConfirm(m_UserData);
+                m_OnClickConfirm = null;
             }
         }
 
         public void OnCancelButtonClick()
         {
-            Close(true);
+            Close();
 
             if (m_OnClickCancel != null)
             {
                 m_OnClickCancel(m_UserData);
+                m_OnClickCancel = null;
             }
+            Close(true);
         }
 
         public void OnOtherButtonClick()
         {
-            Close();
-
             if (m_OnClickOther != null)
             {
                 m_OnClickOther(m_UserData);
+                m_OnClickOther = null;
             }
+            Close();
         }
 
         protected override void OnOpen(object userData)
@@ -141,14 +144,8 @@ namespace BinBall
             m_UserData = null;
 
             RefreshConfirmText(string.Empty);
-            m_OnClickConfirm = null;
-
             RefreshCancelText(string.Empty);
-            m_OnClickCancel = null;
-
             RefreshOtherText(string.Empty);
-            m_OnClickOther = null;
-
             base.OnClose(isShutdown, userData);
         }
 
