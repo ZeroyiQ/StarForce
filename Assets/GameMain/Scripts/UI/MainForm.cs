@@ -40,6 +40,7 @@ namespace BinBall
         public void SetMode(GameMode mode)
         {
             m_Close.SetActive(true);
+            RecycleTextVisual(false);
             switch (mode)
             {
                 case GameMode.Build:
@@ -50,7 +51,6 @@ namespace BinBall
                 case GameMode.Show:
                     m_Show.SetActive(true);
                     m_Build.SetActive(false);
-                    RecycleTextVisual(false);
                     break;
             }
         }

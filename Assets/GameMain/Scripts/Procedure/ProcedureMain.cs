@@ -39,8 +39,6 @@ namespace BinBall
 
         public static Vector4 LimitArea = new Vector4(-6, 6, 6, -6);
 
-        private int showRecycleText = 0;
-
         public void GotoMenu(bool isImediate = false)
         {
             if (isImediate)
@@ -272,20 +270,11 @@ namespace BinBall
             m_CurrentGame = m_Games[gameMode];
             m_CurrentGame.Initialize(m_MyBall);
             m_MainForm.SetMode(m_CurrentGame.GameMode);
-            showRecycleText = 0;
         }
 
         public void SetRecycleTextVisual(bool enable)
         {
-            if (enable)
-            {
-                showRecycleText++;
-            }
-            else
-            {
-                showRecycleText--;
-            }
-            m_MainForm.RecycleTextVisual(showRecycleText > 0);
+            m_MainForm.RecycleTextVisual(enable);
         }
 
         public void CreateABuilder(BuilderType builder, Vector3 worldPos)
