@@ -19,7 +19,7 @@ namespace BinBall
             set { transform.position = ConstraintUtility.GetPositionInLimitArea(value, ProcedureMain.LimitArea, .5f); }
         }
 
-        public void ChangeRoataion(int value)
+        public void ChangeRoataion(float value)
         {
             transform.AddLocalRoationZ(value);
         }
@@ -42,7 +42,7 @@ namespace BinBall
             m_OperationUIVisible = false;
         }
 
-        private void OnMouseDown()
+        public void OnMouseDown()
         {
             if (Verify())
             {
@@ -50,7 +50,7 @@ namespace BinBall
             }
         }
 
-        private void OnMouseDrag()
+        public void OnMouseDrag()
         {
             if (Verify())
             {
@@ -60,7 +60,7 @@ namespace BinBall
             }
         }
 
-        private void OnMouseUp()
+        public void OnMouseUp()
         {
             TransformConstraint = transform.position;
             var procedure = GameEntry.Procedure.GetProcedure<ProcedureMain>() as ProcedureMain;
@@ -146,6 +146,7 @@ namespace BinBall
             if (m_RotationUI != null)
             {
                 GameEntry.OperationUI.HideOperationUI(m_RotationUI);
+                m_RotationUI = null;
             }
             
         }

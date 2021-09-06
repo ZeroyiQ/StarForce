@@ -23,6 +23,9 @@ namespace BinBall
         [SerializeField]
         private UnityEvent m_OnClick = null;
 
+        public UnityEvent m_OnDown = new UnityEvent();
+        public UnityEvent m_OnUp = new UnityEvent();
+
         private CanvasGroup m_CanvasGroup = null;
 
         private void Awake()
@@ -67,6 +70,10 @@ namespace BinBall
 
             m_CanvasGroup.alpha = OnClickAlpha;
             m_OnClick.Invoke();
+            if (m_OnDown != null)
+            {
+                m_OnDown.Invoke();
+            }
         }
 
         public void OnPointerUp(PointerEventData eventData)
@@ -77,6 +84,10 @@ namespace BinBall
             }
 
             m_CanvasGroup.alpha = OnHoverAlpha;
+            if (m_OnUp != null)
+            {
+                m_OnUp.Invoke();
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ namespace BinBall
         private void Awake()
         {
             Destory.onClick.AddListener(OnDestory);
-            m_ShowOffset = new Vector2(150, 40);
+            m_ShowOffset = new Vector2(150, 0);
         }
 
         public void OnDestory()

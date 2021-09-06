@@ -288,6 +288,14 @@ namespace BinBall
             m_MainForm.RecycleTextVisual(showRecycleText > 0);
         }
 
+        public void CreateABuilder(BuilderType builder, Vector3 worldPos)
+        {
+            if (m_CurrentGame.GameMode == GameMode.Build)
+            {
+                ((BuildGame)m_CurrentGame).CreateABuilder(builder, worldPos);
+            }
+        }
+
         #endregion public
     }
 }
