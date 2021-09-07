@@ -34,12 +34,12 @@ namespace BinBall
         {
             if (tryToExcute && Owner != null && Owner.GetType().BaseType == typeof(MoveObject))
             {
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if (UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR
                 if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
                 {
                     Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
                     MoveObject obj = Owner as MoveObject;
-                    float angle = (touchDeltaPosition.y) * 10;
+                    float angle = (touchDeltaPosition.y) * 3;
                     obj.ChangeRoataion(angle);
                     UpdateUIPosition();
                 }

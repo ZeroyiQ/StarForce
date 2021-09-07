@@ -281,7 +281,7 @@ namespace BinBall
 
         public void CreateABuilder(BuilderType builder, Vector3 worldPos)
         {
-            if (m_CurrentGame.GameMode == GameMode.Build)
+            if (m_CurrentGame != null && m_CurrentGame.GameMode == GameMode.Build)
             {
                 ((BuildGame)m_CurrentGame).CreateABuilder(builder, worldPos);
             }

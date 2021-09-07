@@ -52,7 +52,7 @@ namespace BinBall
         /// <returns></returns>
         private bool ExitUI()
         {
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if (UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR
         if (!EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
             return true;
 #else

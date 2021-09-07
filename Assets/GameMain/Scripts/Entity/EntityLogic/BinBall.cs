@@ -8,8 +8,6 @@ namespace BinBall
         [SerializeField]
         private BinballData m_Data;
 
-        private float m_Hight;
-        private Collider m_Collider;
         private Rigidbody m_Rigidbody;
 
         private Vector3 m_PreVelocity = Vector3.zero;
@@ -46,7 +44,6 @@ namespace BinBall
             base.OnInit(userData);
             m_Collider = GetComponent<SphereCollider>();
             m_Rigidbody = GetComponent<Rigidbody>();
-            m_Hight = 0.5f;
         }
 
         protected override void OnShow(object userData)
